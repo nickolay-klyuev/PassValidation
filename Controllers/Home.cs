@@ -5,6 +5,7 @@ namespace EmptyApp.Controllers
 {
     public class HomeController : Controller
     {
+        [Route("validatePassword")]
         public object validatePassword(string password)
         {   
             if (password == null) return StatusCode(400);
@@ -17,6 +18,7 @@ namespace EmptyApp.Controllers
             return Json(status);
         }
 
+        [Route("ping")]
         public IActionResult ping()
         {
             return StatusCode(200);
