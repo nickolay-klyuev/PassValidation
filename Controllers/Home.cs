@@ -19,10 +19,7 @@ namespace EmptyApp.Controllers
         }
 
         [Route("ping")]
-        public IActionResult ping()
-        {
-            return StatusCode(200);
-        }
+        public IActionResult ping() => StatusCode(200);
     }
 }
 
