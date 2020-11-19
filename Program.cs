@@ -20,7 +20,7 @@ namespace PassValidation
             Host.CreateDefaultBuilder(args)
                 .ConfigureWebHostDefaults(webBuilder =>
                 {
-                    webBuilder.UseStartup<Startup>();
+                    webBuilder.UseStartup<Startup>().UseUrls("https://127.0.0.1:7777/");
                 });
     }
 }

@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using System.Text.Json;
 
 namespace PassValidation
 {
@@ -29,7 +30,48 @@ namespace PassValidation
 
             app.UseRouting();
 
-            app.UseEndpoints(endpoints => { endpoints.MapControllers(); });
+            app.UseEndpoints(endpoints => { 
+                endpoints.MapGet("/ping", async context =>
+                {
+                    context.Response.StatusCode = 200;
+                    await context.Response.CompleteAsync();
+                });
+                endpoints.MapGet("/validatePassword", async context =>
+                {
+                    string password = context.Request.Query["password"].ToString();
+                    if (password.Length == 0)
+                    {
+                        context.Response.StatusCode = 400;
+                    }
+                    else
+                    {
+                        context.Response.ContentType = "application/json";
+                        PasswordStatus status = new PasswordStatus{ status = PasswordValidator(password) };
+                        await context.Response.WriteAsync(JsonSerializer.Serialize(status));
+                    }
+                });
+            });
+        }
+
+        public class PasswordStatus
+        {
+            public bool status { get; set; }
+        }
+
+        public static bool PasswordValidator(string password)
+        {   
+            if (password.Length != 16 || 
+                password.IndexOfAny(".,_-!?*=".ToCharArray()) == -1 ||
+                !password.Any(char.IsDigit) ||
+                !password.Any(char.IsUpper) ||
+                !password.Any(char.IsLower))
+            {
+                return false;
+            }
+            else
+            {
+                return true;
+            }
         }
     }
 }
