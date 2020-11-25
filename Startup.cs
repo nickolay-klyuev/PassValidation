@@ -39,7 +39,7 @@ namespace PassValidation
                 endpoints.MapGet("/validatePassword", async context =>
                 {
                     string password = context.Request.Query["password"].ToString();
-                    if (password.Length == 0)
+                    if (string.IsNullOrEmpty(password))
                     {
                         context.Response.StatusCode = 400;
                     }
@@ -60,18 +60,12 @@ namespace PassValidation
 
         public static bool PasswordValidator(string password)
         {   
-            if (password.Length != 16 || 
+            return 
+                !(password.Length != 16 || 
                 password.IndexOfAny(".,_-!?*=".ToCharArray()) == -1 ||
                 !password.Any(char.IsDigit) ||
                 !password.Any(char.IsUpper) ||
-                !password.Any(char.IsLower))
-            {
-                return false;
-            }
-            else
-            {
-                return true;
-            }
+                !password.Any(char.IsLower));
         }
     }
 }
